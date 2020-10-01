@@ -1,0 +1,11 @@
+{
+  "name": "unity-ci",
+  "version": "1.0.0",
+  "description": "Unity CI android docker image POC",
+  "scripts": {
+    "pack": "npx asar pack src ./docker/app.asar",
+    "prebuild": "yarn run pack",
+    "build": "cd docker && docker build --progress=plain . -t unity-ci",
+    "build-only": "cd docker && docker build --progress=plain . -t unity-ci"
+  }
+}

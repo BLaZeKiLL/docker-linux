@@ -18,6 +18,8 @@ RUN apt-get -q update \
     libdbus-glib-1-2 \
     xdotool \
     curl \
+    xz-utils \
+    cpio \
     && apt-get clean
 
 ENV UNITY_DIR="/opt/unity"
@@ -34,6 +36,9 @@ RUN wget --no-verbose -O /tmp/UnityHub.AppImage "https://public-cdn.cloud.unity3
 
 ENV UNITY_HUB_BIN="/opt/unity/UnityHub"
 
+# Used in systeminfo.js (just for logging didn't fing any other use)
+ENV APPIMAGE="/opt/unity/UnityHub"
+
 # Accept
 ENV CONFIG_DIR="/root/.config/Unity Hub"
 RUN mkdir -p "${CONFIG_DIR}" && touch "${CONFIG_DIR}/eulaAccepted"
@@ -48,7 +53,10 @@ RUN mkdir -p "${UNITY_DIR}/editors"
 RUN xvfb-run -e /dev/stdout "$UNITY_HUB_BIN" --no-sandbox --headless install-path --set "${UNITY_DIR}/editors/" \
     && sleep 1
 
-RUN xvfb-run -e /dev/stdout "$UNITY_HUB_BIN" --no-sandbox --debug-mode --headless help
+RUN xvfb-run -e /dev/stdout "$UNITY_HUB_BIN" --no-sandbox --headless install --version 2020.1.7f1 \
+    && sleep 1
 
-# RUN xvfb-run -e /dev/stdout "$UNITY_HUB_BIN" --no-sandbox --headless install \
-#     --version 2020.1.6f1 -m android -m android-open-jdk -m android-sdk-ndk-tools
+RUN xvfb-run -e /dev/stdout "$UNITY_HUB_BIN" --no-sandbox --debug-mode --headless install-modules --version 2020.1.7f1 -m android --cm \
+    $$ sleep 1
+
+RUN xvfb-run -e /dev/stdout "$UNITY_HUB_BIN" --no-sandbox --headless editors -i
