@@ -50,13 +50,18 @@ RUN mkdir -p "${UNITY_DIR}/editors"
 # a /tmp/.X99-lock file around which hampers further executions of `xvfb-run`.
 # See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=932070
 # Hence the "sleep 1" addition.
-RUN xvfb-run -e /dev/stdout "$UNITY_HUB_BIN" --no-sandbox --headless install-path --set "${UNITY_DIR}/editors/" \
+
+# Set unity install location
+RUN xvfb-run --auto-servernum -e /dev/stdout "$UNITY_HUB_BIN" --no-sandbox --headless install-path --set "${UNITY_DIR}/editors/" \
     && sleep 1
 
-RUN xvfb-run -e /dev/stdout "$UNITY_HUB_BIN" --no-sandbox --headless install --version 2020.1.7f1 \
+# Install unity editor
+RUN xvfb-run --auto-servernum -e /dev/stdout "$UNITY_HUB_BIN" --no-sandbox --headless install --version 2020.1.7f1 \
     && sleep 1
 
-RUN xvfb-run -e /dev/stdout "$UNITY_HUB_BIN" --no-sandbox --debug-mode --headless install-modules --version 2020.1.7f1 -m android --cm \
-    $$ sleep 1
+# Install android module with child modules
+RUN xvfb-run --auto-servernum -e /dev/stdout "$UNITY_HUB_BIN" --no-sandbox --debug-mode --headless install-modules \
+    --version 2020.1.7f1 -m android --cm && sleep 1
 
-RUN xvfb-run -e /dev/stdout "$UNITY_HUB_BIN" --no-sandbox --headless editors -i
+# Log installed unity editors
+RUN xvfb-run --auto-servernum -e /dev/stdout "$UNITY_HUB_BIN" --no-sandbox --headless editors -i && sleep 1
