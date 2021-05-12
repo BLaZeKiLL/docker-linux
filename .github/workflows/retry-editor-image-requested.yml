@@ -117,7 +117,7 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.build_editor_image.outputs.digest }}
       - name: Update DockerHub description
-        uses: peter-evans/dockerhub-description@v2
+        uses: peter-evans/dockerhub-description@v2.4.2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
